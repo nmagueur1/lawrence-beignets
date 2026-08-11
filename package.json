@@ -7,7 +7,9 @@
   "scripts": {
     "start": "node src/index.js",
     "dev": "node --watch src/index.js",
-    "deploy": "node src/deploy-commands.js"
+    "deploy": "node src/deploy-commands.js",
+    "start:tablet-api": "node src/api/server.js",
+    "dev:tablet-api": "node --watch src/api/server.js"
   },
   "engines": {
     "node": ">=20.0.0"
@@ -16,6 +18,7 @@
     "discord.js": "^14.16.3",
     "firebase-admin": "^12.7.0",
     "dotenv": "^16.4.5",
-    "node-cron": "^3.0.3"
+    "node-cron": "^3.0.3",
+    "express": "^4.21.2"
   }
 }

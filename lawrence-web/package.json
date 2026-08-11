@@ -1,0 +1,12 @@
+{
+  "name": "lawrence-beignets-web",
+  "version": "0.1.0",
+  "description": "Site web Lawrence Beignets (miroir de la tablette in-game), déployé sur Vercel",
+  "private": true,
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "dependencies": {
+    "firebase-admin": "^12.7.0"
+  }
+}

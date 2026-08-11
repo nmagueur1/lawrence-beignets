@@ -1,0 +1,136 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+  background: #100d0a;
+  color: #f2ede6;
+  min-height: 100vh;
+}
+
+.hidden { display: none !important; }
+
+.topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 24px;
+  background: #14100c;
+  border-bottom: 1px solid #2a231b;
+}
+.brand { font-weight: 700; font-size: 15px; letter-spacing: .04em; color: #e8a33d; }
+.link-btn {
+  background: none; border: none; color: #9c9187; font-size: 13px; cursor: pointer;
+}
+.link-btn:hover { color: #f2ede6; }
+
+.container { max-width: 720px; margin: 0 auto; padding: 24px 16px 60px; }
+
+.empty { color: #6f665c; font-size: 13px; text-align: center; padding: 40px 0; }
+
+/* --- Écran de liaison --- */
+.pairing {
+  max-width: 380px;
+  margin: 60px auto 0;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+}
+.pairing .icon { font-size: 46px; }
+.pairing h1 { font-size: 20px; }
+.pairing p { font-size: 14px; color: #9c9187; line-height: 1.6; }
+.pairing input {
+  width: 240px;
+  padding: 14px;
+  text-align: center;
+  letter-spacing: .3em;
+  font-size: 20px;
+  text-transform: uppercase;
+  background: #1e1811;
+  border: 1px solid #3a2f22;
+  border-radius: 10px;
+  color: #f2ede6;
+}
+.pairing input:focus { outline: 2px solid #e8a33d; }
+
+/* --- Grille d'apps --- */
+.welcome { font-size: 14px; color: #9c9187; margin-bottom: 18px; }
+.welcome b { color: #e8a33d; }
+
+.app-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 14px;
+  margin-bottom: 24px;
+}
+.app-icon {
+  background: #1e1811;
+  border: 1px solid #2a231b;
+  border-radius: 14px;
+  padding: 20px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.app-icon:hover { background: #29211770; }
+.app-icon .emoji { font-size: 28px; }
+.app-icon .label { font-size: 12px; text-align: center; color: #d9d0c5; }
+
+/* --- Vues --- */
+.view-header { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; }
+.view-header .back { cursor: pointer; color: #e8a33d; font-size: 16px; }
+.view-header h2 { font-size: 17px; }
+
+.card {
+  background: #1e1811;
+  border: 1px solid #2a231b;
+  border-radius: 14px;
+  padding: 16px;
+  margin-bottom: 14px;
+}
+.card .row { display: flex; justify-content: space-between; padding: 7px 0; font-size: 14px; }
+.card .row .k { color: #9c9187; }
+.card .row .v { color: #f2ede6; font-weight: 600; }
+.card .big { font-size: 30px; font-weight: 700; color: #e8a33d; }
+
+.list-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #241d15; font-size: 14px; }
+.list-item:last-child { border-bottom: none; }
+.list-item .meta { color: #9c9187; font-size: 12px; }
+.list-item .amount.positive { color: #6fcf6f; }
+.list-item .amount.negative { color: #ed6a5e; }
+
+.rank { display: flex; align-items: center; gap: 10px; padding: 9px 0; font-size: 14px; }
+.rank .medal { width: 24px; text-align: center; }
+
+.tabs { display: flex; gap: 8px; margin-bottom: 14px; }
+.tab-btn {
+  flex: 1; padding: 10px; border-radius: 10px; border: 1px solid #2a231b;
+  background: #1e1811; color: #d9d0c5; cursor: pointer; font-size: 13px;
+}
+.tab-btn.active { border-color: #e8a33d; color: #e8a33d; }
+
+form.f { display: flex; flex-direction: column; gap: 10px; }
+form.f label { font-size: 13px; color: #9c9187; }
+form.f input, form.f textarea {
+  padding: 11px; background: #1e1811; border: 1px solid #2a231b;
+  border-radius: 8px; color: #f2ede6; font-size: 14px; font-family: inherit;
+}
+form.f textarea { resize: none; min-height: 70px; }
+
+.btn-primary {
+  margin-top: 6px; padding: 13px; border: none; border-radius: 10px;
+  background: #e8a33d; color: #14100c; font-weight: 700; font-size: 14px; cursor: pointer;
+}
+.btn-primary:hover { background: #f2b455; }
+
+.toast {
+  position: fixed; left: 50%; bottom: 24px; transform: translateX(-50%);
+  background: #1e1811; border: 1px solid #e8a33d; color: #f2ede6;
+  padding: 12px 18px; border-radius: 10px; font-size: 13px; max-width: 90%; text-align: center; z-index: 10;
+}
+.toast.error { border-color: #ed6a5e; }
+
+.reglement-text { font-size: 13px; line-height: 1.7; white-space: pre-wrap; color: #d9d0c5; }

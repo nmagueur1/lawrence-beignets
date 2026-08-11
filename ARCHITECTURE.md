@@ -101,7 +101,7 @@ Aucun ID Discord ni tarif n'est écrit en dur : tout passe par `config` (Firesto
 **config/** (documents singleton par domaine, pas une collection de règles métier)
 - `config/roles` → `{ patron, coPatron, manager, pro, novice, pine, gouvernement, visiteur }` (IDs de rôles)
 - `config/channels` → IDs de tous les salons référencés (accueil, reglement, recrutement, localisation, contact, annonces, organigramme, points, staffTickets, logs)
-- `config/rates` → `{ NOVICE: 13, PRO: 19, MANAGER: 25, PATRON: 50, CO_PATRON: 50 }`
+- `config/rates` → `{ NOVICE: 12, PRO: 17.5, MANAGER: 23, PATRON: 32, CO_PATRON: 32 }`
 - `config/permissions` → toggles fins (ex: `managerCanPay: true/false`, `managerSanctionTypes: [...]`)
 - `config/recruitment` → `{ open: true/false }`
 - `config/announcements`, `config/reports`, `config/badges`, `config/tickets` → paramètres dédiés

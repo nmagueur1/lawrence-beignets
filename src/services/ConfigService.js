@@ -12,7 +12,7 @@ const DEFAULTS = {
   roles: { patron: null, coPatron: null, manager: null, pro: null, novice: null, pine: null, gouvernement: null, visiteur: null },
   channels: {},
   messages: {},
-  rates: { NOVICE: 13, PRO: 19, MANAGER: 25, PATRON: 50, CO_PATRON: 50 },
+  rates: { NOVICE: 12, PRO: 17.5, MANAGER: 23, PATRON: 32, CO_PATRON: 32 },
   permissions: { managerCanPay: false, managerSanctionTypes: ['WARNING', 'LAST_WARNING'] },
   recruitment: { open: false },
   announcements: {},

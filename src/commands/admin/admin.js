@@ -23,7 +23,7 @@ module.exports = {
             .setName('tarif')
             .setDescription('Modifier le tarif d\'un grade')
             .addStringOption((o) => o.setName('grade').setDescription('Grade').setRequired(true).addChoices(...Object.entries(GRADE_LABELS).map(([value, name]) => ({ name, value }))))
-            .addIntegerOption((o) => o.setName('montant').setDescription('Nouveau tarif ($/beignet)').setRequired(true).setMinValue(1))
+            .addNumberOption((o) => o.setName('montant').setDescription('Nouveau tarif ($/beignet, décimales autorisées : 17.5)').setRequired(true).setMinValue(0.01))
         )
         .addSubcommand((s) =>
           s
@@ -61,7 +61,7 @@ module.exports = {
 
     if (sub === 'tarif') {
       const grade = interaction.options.getString('grade');
-      const montant = interaction.options.getInteger('montant');
+      const montant = interaction.options.getNumber('montant');
       await ConfigService.set('rates', { [grade]: montant });
       await LogService.log(interaction.client, { action: 'TARIF MODIFIÉ', actorId: interaction.user.id, details: { Grade: GRADE_LABELS[grade], Tarif: formatMoney(montant) } });
       await interaction.reply({ embeds: [successEmbed('✅ Tarif mis à jour', `${GRADE_LABELS[grade]} → ${formatMoney(montant)} / beignet`)], ephemeral: true });
