@@ -92,7 +92,7 @@ async function manualRegisterEmployee(client, guild, member, { grade, prenomRp, 
     .send({
       embeds: [
         successEmbed(
-          '🍩 Bienvenue chez Lawrence Doughnuts !',
+          '🍩 Bienvenue chez Lawrence Beignets !',
           `Tu as été enregistré comme employé par <@${actorId}>.\n\nTon grade : **${GRADE_LABELS[grade] || grade}**. Ton salon de paie personnel a été créé sur le serveur.`
         ),
       ],

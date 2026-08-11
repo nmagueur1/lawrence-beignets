@@ -161,7 +161,7 @@ function toMillis(ts) {
 async function buildSalaireEmbed(employee, user) {
   const salesCount = await saleRepo.countByEmployee(employee.discordId);
   const embed = baseEmbed()
-    .setTitle(`${BRAND.EMOJI} LAWRENCE DOUGHNUTS`)
+    .setTitle(`${BRAND.EMOJI} LAWRENCE BEIGNETS`)
     .setDescription('💰 **SITUATION DE PAIE**')
     .setThumbnail(user?.displayAvatarURL ? user.displayAvatarURL() : null)
     .addFields(

@@ -44,7 +44,7 @@ module.exports = {
           .send({
             embeds: [
               successEmbed(
-                '🍩 Lawrence Doughnuts',
+                '🍩 Lawrence Beignets',
                 'Le staff souhaite échanger avec toi au sujet de ta candidature. Un membre du management va te contacter prochainement.'
               ),
             ],

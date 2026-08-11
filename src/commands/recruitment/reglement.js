@@ -9,7 +9,7 @@ const { AppError } = require('../../utils/errors');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('reglement')
-    .setDescription('Gérer le règlement de Lawrence Doughnuts')
+    .setDescription('Gérer le règlement de Lawrence Beignets')
     .addSubcommand((sub) => sub.setName('voir').setDescription('Afficher le règlement actuel'))
     .addSubcommand((sub) => sub.setName('modifier').setDescription('Modifier le règlement (Direction uniquement)')),
 

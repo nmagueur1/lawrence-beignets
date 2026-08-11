@@ -15,7 +15,7 @@ function medal(index) {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('classement')
-    .setDescription('Afficher un classement Lawrence Doughnuts')
+    .setDescription('Afficher un classement Lawrence Beignets')
     .addSubcommand((s) => s.setName('points').setDescription('Top points'))
     .addSubcommand((s) => s.setName('ventes').setDescription('Top beignets vendus'))
     .addSubcommand((s) => s.setName('gains').setDescription('Top gains générés')),

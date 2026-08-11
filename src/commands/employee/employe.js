@@ -10,7 +10,7 @@ const { AppError } = require('../../utils/errors');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('employe')
-    .setDescription('Gérer les employés Lawrence Doughnuts')
+    .setDescription('Gérer les employés Lawrence Beignets')
     .addSubcommand((s) =>
       s
         .setName('ajouter')

@@ -33,7 +33,7 @@ module.exports = {
     if (!targetMember) throw new AppError('membre introuvable', { userMessage: "❌ Ce membre n'est plus sur le serveur." });
 
     const employee = await EmployeeService.getEmployee(targetUser.id);
-    if (!employee) throw new AppError('cible non employé', { userMessage: "❌ Cet utilisateur n'est pas un employé Lawrence Doughnuts enregistré." });
+    if (!employee) throw new AppError('cible non employé', { userMessage: "❌ Cet utilisateur n'est pas un employé Lawrence Beignets enregistré." });
 
     const updated = await EmployeeService.changeGrade(interaction.client, targetMember, newGrade, interaction.user.id);
 

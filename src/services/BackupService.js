@@ -31,7 +31,7 @@ async function createBackup(client, actorId) {
 
   const filename = `backup-${Date.now()}.json`;
   const attachment = new AttachmentBuilder(buffer, { name: filename });
-  const sent = await logChannel.send({ content: `💾 Sauvegarde Lawrence Doughnuts — ${new Date().toISOString()}`, files: [attachment] });
+  const sent = await logChannel.send({ content: `💾 Sauvegarde Lawrence Beignets — ${new Date().toISOString()}`, files: [attachment] });
 
   const meta = await backupRepo.create({
     createdBy: actorId,

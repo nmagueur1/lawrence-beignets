@@ -14,7 +14,7 @@ module.exports = {
     await profilCommand.assertAccess(interaction, targetUser.id);
 
     const employee = await EmployeeService.getEmployee(targetUser.id);
-    if (!employee) throw new AppError('cible non employé', { userMessage: "❌ Cet utilisateur n'est pas un employé Lawrence Doughnuts enregistré." });
+    if (!employee) throw new AppError('cible non employé', { userMessage: "❌ Cet utilisateur n'est pas un employé Lawrence Beignets enregistré." });
 
     const embed = await profilCommand.buildProfilEmbed(employee, targetUser);
     await interaction.reply({ embeds: [embed], ephemeral: true });

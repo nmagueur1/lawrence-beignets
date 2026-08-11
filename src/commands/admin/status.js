@@ -12,7 +12,7 @@ function formatUptime(seconds) {
 }
 
 module.exports = {
-  data: new SlashCommandBuilder().setName('status').setDescription('Afficher l\'état du bot Lawrence Doughnuts'),
+  data: new SlashCommandBuilder().setName('status').setDescription('Afficher l\'état du bot Lawrence Beignets'),
 
   async execute(interaction) {
     await interaction.deferReply({ ephemeral: true });
@@ -27,7 +27,7 @@ module.exports = {
     const memory = process.memoryUsage().rss / 1024 / 1024;
 
     const embed = baseEmbed()
-      .setTitle('🟢 Statut Lawrence Doughnuts')
+      .setTitle('🟢 Statut Lawrence Beignets')
       .addFields(
         { name: 'Bot', value: '🟢 En ligne', inline: true },
         { name: 'Discord', value: `🟢 ${interaction.client.ws.ping}ms`, inline: true },

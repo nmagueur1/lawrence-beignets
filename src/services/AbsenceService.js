@@ -32,7 +32,7 @@ async function reviewAbsence(client, absenceId, reviewerId, decision) {
       .send({
         embeds: [
           baseEmbed()
-            .setTitle('🍩 Lawrence Doughnuts — Absence')
+            .setTitle('🍩 Lawrence Beignets — Absence')
             .setDescription(status === 'ACCEPTED' ? '✅ Ta demande d\'absence a été acceptée.' : '❌ Ta demande d\'absence a été refusée.'),
         ],
       })

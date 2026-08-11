@@ -23,7 +23,7 @@ async function issueSanction(client, { employeeId, issuedBy, type, reason, note,
       .send({
         embeds: [
           baseEmbed()
-            .setTitle('🍩 Lawrence Doughnuts — Sanction')
+            .setTitle('🍩 Lawrence Beignets — Sanction')
             .addFields({ name: 'Type', value: SANCTION_LABELS[type] || type }, { name: 'Motif', value: reason }),
         ],
       })

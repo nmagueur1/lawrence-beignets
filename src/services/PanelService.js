@@ -38,9 +38,9 @@ function channelUrl(guildId, channelId) {
 
 function buildAccueilPanel(guild, channels) {
   const embed = baseEmbed()
-    .setTitle(`${BRAND.EMOJI} LAWRENCE DOUGHNUTS`)
+    .setTitle(`${BRAND.EMOJI} LAWRENCE BEIGNETS`)
     .setDescription(
-      "Bienvenue chez **Lawrence Doughnuts** !\n\nEntreprise spécialisée dans le farm et la vente de beignets sur le serveur GTA RP.\n\nUtilise les boutons ci-dessous pour en savoir plus."
+      "Bienvenue chez **Lawrence Beignets** !\n\nEntreprise spécialisée dans le farm et la vente de beignets sur le serveur GTA RP.\n\nUtilise les boutons ci-dessous pour en savoir plus."
     )
     .setThumbnail(guild.iconURL({ size: 256 }) || null);
 
@@ -57,7 +57,7 @@ function buildAccueilPanel(guild, channels) {
 
 function buildInformationsEmbed() {
   const embed = baseEmbed()
-    .setTitle(`${BRAND.EMOJI} LAWRENCE DOUGHNUTS`)
+    .setTitle(`${BRAND.EMOJI} LAWRENCE BEIGNETS`)
     .setDescription("Présentation officielle de l'entreprise.")
     .addFields(
       { name: '🏢 Activité', value: 'Farm et vente de beignets sur le serveur GTA RP.' },
@@ -124,7 +124,7 @@ function buildLocalisationEmbed() {
         '📍 Point de farm → 🍩 Production → 💰 Point de vente → 🏁 Fin de tournée',
         '',
         '⚠️ **Consignes**',
-        "Une seule tournée existe chez Lawrence Doughnuts : pas de vente directe, pas de commande client.",
+        "Une seule tournée existe chez Lawrence Beignets : pas de vente directe, pas de commande client.",
       ].join('\n')
     );
   return { embeds: [embed] };

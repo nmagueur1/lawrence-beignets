@@ -17,7 +17,7 @@ module.exports = {
     }
 
     const employee = await EmployeeService.getEmployee(targetUser.id);
-    if (!employee) throw new AppError('cible non employé', { userMessage: "❌ Cet utilisateur n'est pas un employé Lawrence Doughnuts enregistré." });
+    if (!employee) throw new AppError('cible non employé', { userMessage: "❌ Cet utilisateur n'est pas un employé Lawrence Beignets enregistré." });
 
     await interaction.reply({ embeds: [PointService.buildPointsEmbed(employee, targetUser)], ephemeral: true });
   },

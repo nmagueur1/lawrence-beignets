@@ -12,7 +12,7 @@ const { AppError } = require('../../utils/errors');
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('admin')
-    .setDescription('Administration Lawrence Doughnuts (Direction)')
+    .setDescription('Administration Lawrence Beignets (Direction)')
     .addSubcommandGroup((g) =>
       g
         .setName('config')
@@ -48,7 +48,7 @@ module.exports = {
       ]);
 
       const embed = baseEmbed()
-        .setTitle('⚙️ Configuration Lawrence Doughnuts')
+        .setTitle('⚙️ Configuration Lawrence Beignets')
         .addFields(
           { name: '🎭 Rôles configurés', value: String(Object.values(roles).filter(Boolean).length) + ' / ' + Object.keys(roles).length, inline: true },
           { name: '📁 Salons configurés', value: String(Object.values(channels).filter(Boolean).length), inline: true },

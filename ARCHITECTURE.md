@@ -1,4 +1,4 @@
-# 🍩 Lawrence Doughnuts — Architecture technique
+# 🍩 Lawrence Beignets — Architecture technique
 
 Document de conception avant implémentation. Couvre l'architecture, le schéma Firestore, les services, les permissions, les incohérences identifiées (et leur résolution) et l'ordre de développement.
 

@@ -51,7 +51,7 @@ module.exports = {
     });
 
     await interaction.editReply({
-      embeds: [successEmbed('✅ Candidature envoyée', "Ta candidature a bien été transmise au staff Lawrence Doughnuts. Tu recevras une réponse par message privé.")],
+      embeds: [successEmbed('✅ Candidature envoyée', "Ta candidature a bien été transmise au staff Lawrence Beignets. Tu recevras une réponse par message privé.")],
     });
   },
 };

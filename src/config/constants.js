@@ -46,11 +46,11 @@ const TICKET_CATEGORY = {
 };
 
 const TICKET_CATEGORY_LABELS = {
-  QUESTION: { emoji: '❓', label: 'Question', prefix: 'question' },
-  FARM: { emoji: '🍩', label: 'Question sur le farm', prefix: 'farm' },
-  SIGNALEMENT: { emoji: '⚠️', label: 'Signalement interne', prefix: 'signalement' },
-  MANAGEMENT: { emoji: '👤', label: 'Demande au management', prefix: 'management' },
-  AUTRE: { emoji: '❔', label: 'Autre', prefix: 'autre' },
+  QUESTION: { emoji: '❓', label: 'Question' },
+  FARM: { emoji: '🍩', label: 'Question sur le farm' },
+  SIGNALEMENT: { emoji: '⚠️', label: 'Signalement interne' },
+  MANAGEMENT: { emoji: '👤', label: 'Demande au management' },
+  AUTRE: { emoji: '❔', label: 'Autre' },
 };
 
 const TICKET_STATUS = {
@@ -177,13 +177,13 @@ const PAY_CATEGORY_NAME = '📄 FICHE DE PAYE';
 const TICKET_CATEGORY_NAME = '🎫 TICKETS';
 
 const BRAND = {
-  NAME: 'Lawrence Doughnuts',
+  NAME: 'Lawrence Beignets',
   EMOJI: '🍩',
   COLOR: 0xE8A33D,
   COLOR_SUCCESS: 0x57F287,
   COLOR_DANGER: 0xED4245,
   COLOR_WARNING: 0xFEE75C,
-  FOOTER: '🍩 Lawrence Doughnuts — GTA RP',
+  FOOTER: '🍩 Lawrence Beignets — GTA RP',
 };
 
 module.exports = {

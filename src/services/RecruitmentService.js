@@ -25,7 +25,7 @@ function buildRecruitmentPanel(open) {
     .setTitle(`${BRAND.EMOJI} RECRUTEMENT — ${BRAND.NAME}`)
     .setDescription(
       open
-        ? '🟢 **RECRUTEMENT OUVERT**\n\nRejoins l\'équipe Lawrence Doughnuts ! Clique sur le bouton ci-dessous pour candidater.'
+        ? '🟢 **RECRUTEMENT OUVERT**\n\nRejoins l\'équipe Lawrence Beignets ! Clique sur le bouton ci-dessous pour candidater.'
         : '🔴 **RECRUTEMENT FERMÉ**\n\nLe recrutement est actuellement fermé. Reviens plus tard !'
     );
 
@@ -57,7 +57,7 @@ function buildApplicationEmbed(application, user) {
       { name: '💼 Expérience', value: application.experience?.slice(0, 1024) || '—' },
       { name: '🕐 Disponibilités', value: application.disponibilites?.slice(0, 1024) || '—' },
       { name: '🎯 Motivation', value: application.motivation?.slice(0, 1024) || '—' },
-      { name: '🍩 Pourquoi Lawrence Doughnuts ?', value: application.pourquoi?.slice(0, 1024) || '—' },
+      { name: '🍩 Pourquoi Lawrence Beignets ?', value: application.pourquoi?.slice(0, 1024) || '—' },
       { name: '⏱️ Temps de jeu approx.', value: application.tempsDeJeu || '—' },
       { name: '📌 Statut', value: statusLabel(application.status) }
     );
@@ -111,7 +111,7 @@ async function acceptApplication(client, guild, application, reviewer) {
     .send({
       embeds: [
         successEmbed(
-          '🍩 Bienvenue chez Lawrence Doughnuts !',
+          '🍩 Bienvenue chez Lawrence Beignets !',
           `Ta candidature a été **acceptée** par <@${reviewer.id}>.\n\nTu es maintenant **NOVICE**. Ton salon de paie personnel a été créé sur le serveur.`
         ),
       ],
@@ -138,7 +138,7 @@ async function refuseApplication(client, application, reviewer) {
   const user = await client.users.fetch(application.userId).catch(() => null);
   if (user) {
     await user
-      .send({ embeds: [baseEmbed().setTitle('🍩 Lawrence Doughnuts').setDescription('Ta candidature n\'a malheureusement pas été retenue.')] })
+      .send({ embeds: [baseEmbed().setTitle('🍩 Lawrence Beignets').setDescription('Ta candidature n\'a malheureusement pas été retenue.')] })
       .catch(() => null);
   }
 

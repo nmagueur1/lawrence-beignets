@@ -1,6 +1,6 @@
-# 🍩 Lawrence Doughnuts — Bot Discord
+# 🍩 Lawrence Beignets — Bot Discord
 
-Système de gestion d'entreprise GTA RP pour **Lawrence Doughnuts** : recrutement, tickets, salons de paie, ventes, primes, points, sanctions, absences, dashboard, administration.
+Système de gestion d'entreprise GTA RP pour **Lawrence Beignets** : recrutement, tickets, salons de paie, ventes, primes, points, sanctions, absences, dashboard, administration.
 
 > Voir [`ARCHITECTURE.md`](./ARCHITECTURE.md) pour l'architecture technique complète et le schéma Firestore.
 
@@ -14,7 +14,7 @@ Système de gestion d'entreprise GTA RP pour **Lawrence Doughnuts** : recrutemen
 
 ## 2. Créer le bot Discord
 
-1. Va sur https://discord.com/developers/applications → **New Application** → nomme-la `Lawrence Doughnuts`.
+1. Va sur https://discord.com/developers/applications → **New Application** → nomme-la `Lawrence Beignets`.
 2. Onglet **Bot** → **Add Bot**. Active :
    - `Server Members Intent`
    - `Message Content Intent`
@@ -23,12 +23,12 @@ Système de gestion d'entreprise GTA RP pour **Lawrence Doughnuts** : recrutemen
 5. Onglet **OAuth2 → URL Generator** :
    - Scopes : `bot`, `applications.commands`
    - Permissions : `Administrator` (le plus simple pour un bot de gestion interne), ou au minimum : Gérer les salons, Gérer les rôles, Envoyer des messages, Gérer les messages, Intégrer des liens, Joindre des fichiers, Utiliser les commandes slash, Créer des tickets privés (Gérer les salons).
-6. Ouvre l'URL générée, invite le bot sur ton serveur Lawrence Doughnuts.
+6. Ouvre l'URL générée, invite le bot sur ton serveur Lawrence Beignets.
 7. Active le mode développeur Discord (Paramètres → Avancés) puis clic droit sur ton serveur → **Copier l'ID** → à mettre dans `GUILD_ID`. Fais la même chose sur ton propre profil pour `OWNER_ID`.
 
 ## 3. Créer le projet Firebase
 
-1. Va sur https://console.firebase.google.com → **Ajouter un projet** → nomme-le `lawrence-doughnuts` (ou autre).
+1. Va sur https://console.firebase.google.com → **Ajouter un projet** → nomme-le `lawrence-beignets` (ou autre).
 2. Une fois créé, va dans **Compilation → Firestore Database** → **Créer une base de données** → mode production → choisis une région proche.
 3. Va dans **Paramètres du projet (⚙️) → Comptes de service** → **Générer une nouvelle clé privée**. Un fichier `.json` est téléchargé.
 4. Dans ce fichier JSON, récupère :
@@ -70,7 +70,7 @@ npm run dev
 4. Dans l'onglet **Variables** du service Railway, ajoute exactement les mêmes variables que dans `.env.example` (`DISCORD_TOKEN`, `CLIENT_ID`, `GUILD_ID`, `OWNER_ID`, `FIREBASE_PROJECT_ID`, `FIREBASE_CLIENT_EMAIL`, `FIREBASE_PRIVATE_KEY`) — ne pousse jamais le fichier `.env` lui-même.
    - Pour `FIREBASE_PRIVATE_KEY`, colle la clé avec les `\n` littéraux (comme dans `.env.example`) : Railway la transmet telle quelle, et `src/database/firebase.js` la convertit déjà en vrais retours à la ligne au démarrage.
 5. Le déploiement de commandes slash (`npm run deploy`) n'a pas besoin de tourner en continu : exécute-le une fois en local (ou via `railway run npm run deploy`) à chaque ajout/modification de commande. Le process Railway lui-même ne doit lancer que `npm start` (le bot lui-même), pas `deploy`.
-6. Vérifie les logs dans l'onglet **Deployments → View Logs** pour confirmer `[Lawrence Doughnuts] Connecté en tant que ...`.
+6. Vérifie les logs dans l'onglet **Deployments → View Logs** pour confirmer `[Lawrence Beignets] Connecté en tant que ...`.
 
 ## 7. Premier lancement sur le serveur
 

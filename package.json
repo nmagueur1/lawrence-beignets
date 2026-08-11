@@ -1,7 +1,7 @@
 {
-  "name": "lawrence-doughnuts-bot",
+  "name": "lawrence-beignets-bot",
   "version": "1.0.0",
-  "description": "Bot Discord de gestion d'entreprise pour Lawrence Doughnuts (GTA RP)",
+  "description": "Bot Discord de gestion d'entreprise pour Lawrence Beignets (GTA RP)",
   "main": "src/index.js",
   "type": "commonjs",
   "scripts": {

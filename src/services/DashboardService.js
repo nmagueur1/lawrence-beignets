@@ -24,7 +24,7 @@ async function getAggregates() {
 async function buildMainEmbed() {
   const agg = await getAggregates();
   return baseEmbed()
-    .setTitle(`${BRAND.EMOJI} LAWRENCE DOUGHNUTS`)
+    .setTitle(`${BRAND.EMOJI} LAWRENCE BEIGNETS`)
     .setDescription('Tableau de bord')
     .addFields(
       { name: '👥 Employés', value: formatNumber(agg.count), inline: true },

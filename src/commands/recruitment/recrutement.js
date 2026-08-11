@@ -19,7 +19,7 @@ async function refreshPanel(client) {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('recrutement')
-    .setDescription('Gérer le statut du recrutement Lawrence Doughnuts')
+    .setDescription('Gérer le statut du recrutement Lawrence Beignets')
     .addSubcommand((s) => s.setName('ouvrir').setDescription('Ouvrir le recrutement'))
     .addSubcommand((s) => s.setName('fermer').setDescription('Fermer le recrutement'))
     .addSubcommand((s) => s.setName('statut').setDescription('Afficher le statut du recrutement')),

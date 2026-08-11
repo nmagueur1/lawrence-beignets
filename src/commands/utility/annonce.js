@@ -19,7 +19,7 @@ const CATEGORIES = {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('annonce')
-    .setDescription('Publier une annonce officielle Lawrence Doughnuts')
+    .setDescription('Publier une annonce officielle Lawrence Beignets')
     .addStringOption((o) => o.setName('titre').setDescription('Titre de l\'annonce').setRequired(true))
     .addStringOption((o) => o.setName('description').setDescription('Contenu de l\'annonce').setRequired(true))
     .addStringOption((o) =>

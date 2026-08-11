@@ -1,4 +1,4 @@
-# 🍩 Lawrence Doughnuts — Idées bonus (P2)
+# 🍩 Lawrence Beignets — Idées bonus (P2)
 
 Le cœur du système (P0 + P1) est terminé, testé et livré. Voici des idées bonus, aucune n'est développée pour l'instant — dis-moi lesquelles t'intéressent et je les construis sur le même modèle que le reste (services + Firestore + embeds premium).
 

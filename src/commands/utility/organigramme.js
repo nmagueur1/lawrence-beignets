@@ -8,7 +8,7 @@ const PanelService = require('../../services/PanelService');
 const { AppError } = require('../../utils/errors');
 
 module.exports = {
-  data: new SlashCommandBuilder().setName('organigramme').setDescription('Actualiser l\'organigramme Lawrence Doughnuts'),
+  data: new SlashCommandBuilder().setName('organigramme').setDescription('Actualiser l\'organigramme Lawrence Beignets'),
 
   async execute(interaction) {
     const allowed = await PermissionService.isManagerOrAbove(interaction.member);

@@ -10,7 +10,7 @@ const employeeRepo = require('../database/repositories/employeeRepo');
 
 function buildFicheEmbed(employee) {
   const embed = baseEmbed()
-    .setTitle(`${BRAND.EMOJI} LAWRENCE DOUGHNUTS`)
+    .setTitle(`${BRAND.EMOJI} LAWRENCE BEIGNETS`)
     .setDescription(
       [
         '📄 **FICHE DE PAYE**',

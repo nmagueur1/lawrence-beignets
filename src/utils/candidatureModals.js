@@ -33,7 +33,7 @@ function buildStep2Modal() {
   const fields = [
     ['disponibilites', 'Disponibilités', TextInputStyle.Short],
     ['motivation', 'Motivation', TextInputStyle.Paragraph],
-    ['pourquoi', 'Pourquoi Lawrence Doughnuts ?', TextInputStyle.Paragraph],
+    ['pourquoi', 'Pourquoi Lawrence Beignets ?', TextInputStyle.Paragraph],
     ['tempsDeJeu', 'Temps de jeu approximatif', TextInputStyle.Short],
   ];
   for (const [id, label, style] of fields) {

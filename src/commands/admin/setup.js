@@ -125,7 +125,7 @@ async function postPanels(client, guild, channels) {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('setup')
-    .setDescription("Configure automatiquement le serveur Lawrence Doughnuts (rôles, salons, panels). Idempotent.")
+    .setDescription("Configure automatiquement le serveur Lawrence Beignets (rôles, salons, panels). Idempotent.")
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   async execute(interaction) {

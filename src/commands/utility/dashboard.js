@@ -15,7 +15,7 @@ function buildRow() {
 }
 
 module.exports = {
-  data: new SlashCommandBuilder().setName('dashboard').setDescription('Tableau de bord Lawrence Doughnuts (Management)'),
+  data: new SlashCommandBuilder().setName('dashboard').setDescription('Tableau de bord Lawrence Beignets (Management)'),
   buildRow,
 
   async execute(interaction) {
