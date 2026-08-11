@@ -39,9 +39,9 @@ function buildTicketButtons(ticket) {
 }
 
 /**
- * Crée un ticket privé. Nom du salon : emoji de la catégorie + ID utilisateur
- * (ex: ❓ Question -> ❓1234567890). L'emoji reste aussi visible dans l'embed
- * et le topic du salon.
+ * Crée un ticket privé. Nom du salon : emoji de la catégorie + pseudo Discord
+ * de l'utilisateur (ex: ❓ Question -> ❓nathan). L'emoji reste aussi visible
+ * dans l'embed et le topic du salon.
  */
 async function createTicket(guild, user, category) {
   const meta = TICKET_CATEGORY_LABELS[category];
@@ -57,7 +57,7 @@ async function createTicket(guild, user, category) {
   if (roles.coPatron) overwrites.push({ id: roles.coPatron, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages] });
 
   const channel = await guild.channels.create({
-    name: `${meta.emoji}${user.id}`,
+    name: `${meta.emoji}${user.username}`,
     type: ChannelType.GuildText,
     parent: ticketCategory.id,
     permissionOverwrites: overwrites,
