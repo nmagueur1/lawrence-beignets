@@ -76,14 +76,44 @@ async function ensurePayChannel(guild, member, employee) {
 
 /**
  * Réactualise l'embed épinglé de la fiche de paie (appelé après chaque vente/paiement).
+ * Auto-réparateur : si le message épinglé a été supprimé/perdu (payMessageId périmé),
+ * on en republie un nouveau et on met à jour Firestore, au lieu d'échouer en silence
+ * indéfiniment à chaque vente suivante.
  */
 async function refreshFiche(client, employee) {
-  if (!employee.payChannelId || !employee.payMessageId) return;
-  const channel = await client.channels.fetch(employee.payChannelId).catch(() => null);
+  if (!employee.payChannelId) {
+    console.error(`[PayChannelService] refreshFiche: payChannelId manquant pour ${employee.discordId}`);
+    return;
+  }
+
+  const channel = await client.channels.fetch(employee.payChannelId).catch((err) => {
+    console.error(`[PayChannelService] refreshFiche: salon ${employee.payChannelId} introuvable pour ${employee.discordId}`, err);
+    return null;
+  });
   if (!channel) return;
-  const message = await channel.messages.fetch(employee.payMessageId).catch(() => null);
-  if (!message) return;
-  await message.edit(buildFicheEmbed(employee)).catch(() => null);
+
+  const message = employee.payMessageId
+    ? await channel.messages.fetch(employee.payMessageId).catch(() => null)
+    : null;
+
+  if (message) {
+    await message.edit(buildFicheEmbed(employee)).catch((err) => {
+      console.error(`[PayChannelService] refreshFiche: échec édition message pour ${employee.discordId}`, err);
+    });
+    return;
+  }
+
+  // Message introuvable (supprimé, ou jamais créé) : on en repost un et on
+  // corrige payMessageId pour que les prochaines ventes retrouvent le bon message.
+  console.error(`[PayChannelService] refreshFiche: message épinglé introuvable pour ${employee.discordId}, republication.`);
+  const sent = await channel.send(buildFicheEmbed(employee)).catch((err) => {
+    console.error(`[PayChannelService] refreshFiche: échec republication pour ${employee.discordId}`, err);
+    return null;
+  });
+  if (!sent) return;
+
+  await sent.pin().catch(() => null);
+  await employeeRepo.update(employee.discordId, { payMessageId: sent.id });
 }
 
 module.exports = { ensurePayChannel, refreshFiche, buildFicheEmbed };

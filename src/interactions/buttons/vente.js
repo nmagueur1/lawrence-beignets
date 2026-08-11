@@ -60,8 +60,17 @@ module.exports = {
     await interaction.editReply({ embeds: [resultEmbed], components: [] });
 
     if (employee.payChannelId) {
-      const payChannel = await interaction.client.channels.fetch(employee.payChannelId).catch(() => null);
-      if (payChannel) await payChannel.send({ embeds: [resultEmbed] }).catch(() => null);
+      const payChannel = await interaction.client.channels.fetch(employee.payChannelId).catch((err) => {
+        console.error(`[vente] salon de paie ${employee.payChannelId} introuvable pour ${employee.discordId}`, err);
+        return null;
+      });
+      if (payChannel) {
+        await payChannel.send({ embeds: [resultEmbed] }).catch((err) => {
+          console.error(`[vente] échec envoi embed dans le salon de paie de ${employee.discordId}`, err);
+        });
+      }
+    } else {
+      console.error(`[vente] employee.payChannelId manquant pour ${employee.discordId}`);
     }
 
     await LogService.log(interaction.client, {
