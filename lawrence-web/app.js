@@ -5,13 +5,29 @@
   const logoutBtn = document.getElementById('btn-logout');
 
   async function api(path, method = 'GET', body = null) {
-    const res = await fetch(`/api/${path}`, {
-      method,
-      headers: body ? { 'Content-Type': 'application/json' } : undefined,
-      credentials: 'same-origin',
-      body: body ? JSON.stringify(body) : undefined,
-    });
-    const data = await res.json().catch(() => ({}));
+    let res;
+    try {
+      res = await fetch(`/api/${path}`, {
+        method,
+        headers: body ? { 'Content-Type': 'application/json' } : undefined,
+        credentials: 'same-origin',
+        body: body ? JSON.stringify(body) : undefined,
+      });
+    } catch (networkErr) {
+      // La requête n'a même pas atteint le serveur (DNS, réseau coupé...).
+      return { status: 0, data: { error: `Réseau : ${networkErr.message}` } };
+    }
+
+    // On lit le corps en texte d'abord : si l'API a planté avant de renvoyer
+    // du JSON (ex: erreur de plateforme Vercel, page HTML), on affiche quand
+    // même quelque chose d'utile plutôt que d'avaler l'erreur silencieusement.
+    const text = await res.text().catch(() => '');
+    let data;
+    try {
+      data = text ? JSON.parse(text) : {};
+    } catch {
+      data = { error: text ? `Réponse inattendue (HTTP ${res.status}) : ${text.slice(0, 180)}` : `Réponse vide (HTTP ${res.status}).` };
+    }
     return { status: res.status, data };
   }
 
@@ -81,7 +97,9 @@
       if (!code) return;
       const res = await api('link', 'POST', { code });
       if (res.status >= 400) {
-        toast(res.data?.error || 'Code invalide.', true);
+        // Message affiché en dur sur l'écran (pas juste un toast qui disparaît
+        // en 3s) : status HTTP inclus pour diagnostiquer sans outils dev.
+        renderPairing(`Erreur HTTP ${res.status} — ${res.data?.error || 'raison inconnue.'}`);
         return;
       }
       toast('Connecté !');
