@@ -65,7 +65,7 @@ module.exports = {
     } else if (action === 'refuse') {
       await RecruitmentService.refuseApplication(interaction.client, application, interaction.user);
     } else if (action === 'wait') {
-      await RecruitmentService.waitApplication(interaction.client, application, interaction.user);
+      await RecruitmentService.waitApplication(interaction.client, interaction.guild, application, interaction.user);
     } else {
       return;
     }

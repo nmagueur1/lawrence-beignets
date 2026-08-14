@@ -5,10 +5,11 @@ const applicationRepo = require('../database/repositories/applicationRepo');
 const employeeRepo = require('../database/repositories/employeeRepo');
 const ConfigService = require('./ConfigService');
 const PayChannelService = require('./PayChannelService');
+const TicketService = require('./TicketService');
 const LogService = require('./LogService');
 const { baseEmbed, successEmbed } = require('../utils/embeds');
 const { discordTimestamp } = require('../utils/format');
-const { BRAND } = require('../config/constants');
+const { BRAND, TICKET_CATEGORY, CV_CATEGORY_NAME } = require('../config/constants');
 const { AppError } = require('../utils/errors');
 
 async function getStatus() {
@@ -150,12 +151,36 @@ async function refuseApplication(client, application, reviewer) {
   });
 }
 
-async function waitApplication(client, application, reviewer) {
+/**
+ * Met une candidature en attente : comme pour une acceptation, un salon privé
+ * est créé (mêmes droits staff), mais dans la catégorie CV_CATEGORY_NAME et
+ * réservé au staff (le candidat n'y a pas accès). Le résumé complet de la
+ * candidature (CV) y est épinglé pour qu'on puisse s'en souvenir plus tard.
+ */
+async function waitApplication(client, guild, application, reviewer) {
   await applicationRepo.update(application.applicationId, {
     status: 'WAITING',
     reviewedBy: reviewer.id,
     reviewedAt: new Date().toISOString(),
   });
+
+  if (guild) {
+    try {
+      const applicant = await client.users.fetch(application.userId).catch(() => null);
+      if (applicant) {
+        const summaryEmbed = buildApplicationEmbed(application, applicant);
+        const { channel, ticket } = await TicketService.createTicket(guild, applicant, TICKET_CATEGORY.CANDIDATURE_ATTENTE, {
+          parentCategoryName: CV_CATEGORY_NAME,
+          extraEmbed: summaryEmbed,
+          includeUser: false,
+        });
+        await applicationRepo.update(application.applicationId, { holdChannelId: channel.id, holdTicketId: ticket.ticketId });
+      }
+    } catch (err) {
+      // On ne bloque jamais le passage en "attente" si la création du salon CV échoue.
+      console.error('[RecruitmentService] waitApplication: échec de la création du salon CV', err);
+    }
+  }
 
   await LogService.log(client, {
     action: 'CANDIDATURE EN ATTENTE',

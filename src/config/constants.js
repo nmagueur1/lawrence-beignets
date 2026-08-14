@@ -43,6 +43,7 @@ const TICKET_CATEGORY = {
   SIGNALEMENT: 'SIGNALEMENT',
   MANAGEMENT: 'MANAGEMENT',
   AUTRE: 'AUTRE',
+  CANDIDATURE_ATTENTE: 'CANDIDATURE_ATTENTE',
 };
 
 const TICKET_CATEGORY_LABELS = {
@@ -51,6 +52,7 @@ const TICKET_CATEGORY_LABELS = {
   SIGNALEMENT: { emoji: '⚠️', label: 'Signalement interne' },
   MANAGEMENT: { emoji: '👤', label: 'Demande au management' },
   AUTRE: { emoji: '❔', label: 'Autre' },
+  CANDIDATURE_ATTENTE: { emoji: '🗂️', label: 'Candidature en attente (CV)' },
 };
 
 const TICKET_STATUS = {
@@ -176,6 +178,10 @@ const PAY_CATEGORY_NAME = '📄 FICHE DE PAYE';
 // Catégorie créée à la volée pour héberger les salons de tickets (contact).
 const TICKET_CATEGORY_NAME = '🎫 TICKETS';
 
+// Catégorie créée à la volée (ou via /cv-categorie) pour archiver les CV des
+// candidatures mises en attente.
+const CV_CATEGORY_NAME = '🗂️ CV EN ATTENTE';
+
 const BRAND = {
   NAME: 'Lawrence Beignets',
   EMOJI: '🍩',
@@ -204,6 +210,7 @@ module.exports = {
   CHANNEL_STRUCTURE,
   PAY_CATEGORY_NAME,
   TICKET_CATEGORY_NAME,
+  CV_CATEGORY_NAME,
   NOTE_TYPE,
   NOTE_LABELS,
   BADGE_CRITERIA,

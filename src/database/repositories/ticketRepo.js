@@ -14,6 +14,9 @@ async function create(data) {
     status: 'OPEN',
     assignedTo: null,
     priority: false,
+    // Embed complémentaire figé à la création (ex: résumé de candidature pour les
+    // CV mis en attente), réaffiché tel quel à chaque rafraîchissement du ticket.
+    extraEmbed: data.extraEmbed || null,
     createdAt: FieldValue.serverTimestamp(),
     closedAt: null,
     closedBy: null,

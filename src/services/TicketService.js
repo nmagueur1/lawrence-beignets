@@ -1,6 +1,6 @@
 'use strict';
 
-const { ChannelType, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle, AttachmentBuilder } = require('discord.js');
+const { ChannelType, PermissionFlagsBits, ActionRowBuilder, ButtonBuilder, ButtonStyle, AttachmentBuilder, EmbedBuilder } = require('discord.js');
 const ticketRepo = require('../database/repositories/ticketRepo');
 const ConfigService = require('./ConfigService');
 const LogService = require('./LogService');
@@ -42,16 +42,24 @@ function buildTicketButtons(ticket) {
  * Crée un ticket privé. Nom du salon : emoji de la catégorie + pseudo Discord
  * de l'utilisateur (ex: ❓ Question -> ❓nathan). L'emoji reste aussi visible
  * dans l'embed et le topic du salon.
+ *
+ * Options :
+ * - parentCategoryName : catégorie Discord d'accueil du salon (par défaut TICKET_CATEGORY_NAME).
+ * - extraEmbed : EmbedBuilder additionnel figé à la création (ex: résumé de candidature),
+ *   ré-affiché au-dessus de l'embed de ticket à chaque rafraîchissement (claim/transfert/priorité).
+ * - includeUser : si false, l'utilisateur concerné n'a pas accès au salon (archive interne
+ *   réservée au staff), et n'est pas mentionné à la création.
  */
-async function createTicket(guild, user, category) {
+async function createTicket(guild, user, category, options = {}) {
+  const { parentCategoryName = TICKET_CATEGORY_NAME, extraEmbed = null, includeUser = true } = options;
   const meta = TICKET_CATEGORY_LABELS[category];
   const roles = await ConfigService.getRoles();
-  const ticketCategory = await ensureCategory(guild, TICKET_CATEGORY_NAME);
+  const ticketCategory = await ensureCategory(guild, parentCategoryName);
 
-  const overwrites = [
-    { id: guild.roles.everyone.id, deny: [PermissionFlagsBits.ViewChannel] },
-    { id: user.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.AttachFiles] },
-  ];
+  const overwrites = [{ id: guild.roles.everyone.id, deny: [PermissionFlagsBits.ViewChannel] }];
+  if (includeUser) {
+    overwrites.push({ id: user.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages, PermissionFlagsBits.AttachFiles] });
+  }
   if (roles.manager) overwrites.push({ id: roles.manager, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages] });
   if (roles.patron) overwrites.push({ id: roles.patron, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages] });
   if (roles.coPatron) overwrites.push({ id: roles.coPatron, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages] });
@@ -64,11 +72,16 @@ async function createTicket(guild, user, category) {
     topic: `${meta.emoji} ${meta.label} — ${user.tag}`,
   });
 
-  const ticket = await ticketRepo.create({ channelId: channel.id, userId: user.id, category });
+  const ticket = await ticketRepo.create({
+    channelId: channel.id,
+    userId: user.id,
+    category,
+    extraEmbed: extraEmbed ? extraEmbed.toJSON() : null,
+  });
 
   const sent = await channel.send({
-    content: `<@${user.id}>`,
-    embeds: [buildTicketEmbed(ticket)],
+    content: includeUser ? `<@${user.id}>` : undefined,
+    embeds: extraEmbed ? [extraEmbed, buildTicketEmbed(ticket)] : [buildTicketEmbed(ticket)],
     components: [buildTicketButtons(ticket)],
   });
   await sent.pin().catch(() => null);
@@ -80,7 +93,8 @@ async function refreshTicketMessage(channel, ticket) {
   const pinned = await channel.messages.fetchPinned().catch(() => null);
   const message = pinned?.first();
   if (!message) return;
-  await message.edit({ embeds: [buildTicketEmbed(ticket)], components: [buildTicketButtons(ticket)] }).catch(() => null);
+  const embeds = ticket.extraEmbed ? [EmbedBuilder.from(ticket.extraEmbed), buildTicketEmbed(ticket)] : [buildTicketEmbed(ticket)];
+  await message.edit({ embeds, components: [buildTicketButtons(ticket)] }).catch(() => null);
 }
 
 async function claimTicket(client, channel, ticket, manager) {
