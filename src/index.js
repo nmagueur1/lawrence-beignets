@@ -70,4 +70,18 @@ client.once('ready', () => {
 process.on('unhandledRejection', (err) => console.error('[unhandledRejection]', err));
 process.on('uncaughtException', (err) => console.error('[uncaughtException]', err));
 
-client.login(process.env.DISCORD_TOKEN);
+// Ces events (surtout shardError/shardDisconnect) ne passent PAS par
+// unhandledRejection : sans listener dessus, un souci de connexion à la gateway
+// Discord (token invalide, intents désactivés, coupure réseau...) échoue en
+// silence totale, sans aucune trace dans les logs.
+client.on('error', (err) => console.error('[Lawrence Beignets] Erreur client Discord :', err));
+client.on('warn', (info) => console.warn('[Lawrence Beignets] Avertissement Discord :', info));
+client.on('shardError', (err, shardId) => console.error(`[Lawrence Beignets] Erreur shard #${shardId} :`, err));
+client.on('shardDisconnect', (event, shardId) => console.warn(`[Lawrence Beignets] Shard #${shardId} déconnectée (code ${event?.code}) :`, event?.reason));
+client.on('shardReconnecting', (shardId) => console.warn(`[Lawrence Beignets] Shard #${shardId} tente une reconnexion...`));
+
+console.log('[Lawrence Beignets] Démarrage : tentative de connexion à Discord...');
+
+client.login(process.env.DISCORD_TOKEN).catch((err) => {
+  console.error('[Lawrence Beignets] Échec de connexion à Discord :', err);
+});
