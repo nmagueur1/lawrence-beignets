@@ -190,6 +190,21 @@ function buildHistoryLine(entry) {
   return `💸 **Paiement** — ${formatMoney(entry.amount)} · ${date}${entry.comment ? ` · _${entry.comment}_` : ''}`;
 }
 
+/**
+ * Liste tous les employés actifs ayant un reste à payer (balance > 0), triés
+ * du plus gros au plus petit solde. Utilisé par `/paye-list`.
+ */
+async function getPendingPayments() {
+  const employees = await employeeRepo.listAllActive();
+  return employees
+    .filter((e) => (e.balance || 0) > 0)
+    .sort((a, b) => (b.balance || 0) - (a.balance || 0));
+}
+
+function buildPayeListLine(employee) {
+  return `${GRADE_LABELS[employee.grade] || employee.grade} <@${employee.discordId}> — **${formatMoney(employee.balance || 0)}**`;
+}
+
 module.exports = {
   getRateForGrade,
   calculateSaleAmount,
@@ -198,4 +213,6 @@ module.exports = {
   getHistory,
   buildSalaireEmbed,
   buildHistoryLine,
+  getPendingPayments,
+  buildPayeListLine,
 };
