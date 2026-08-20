@@ -140,7 +140,7 @@ async function postPanels(client, guild, channels) {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('setup')
-    .setDescription('Détecte la configuration du serveur Lawrence Beignets (rôles, salons, panels). Ne crée jamais de salon/rôle.')
+    .setDescription('Détecte la config serveur (rôles, salons, panels). Ne crée jamais de salon ni de rôle.')
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   async execute(interaction) {
