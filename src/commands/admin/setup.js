@@ -7,7 +7,6 @@ const PanelService = require('../../services/PanelService');
 const LogService = require('../../services/LogService');
 const { successEmbed, errorEmbed } = require('../../utils/embeds');
 const { AppError } = require('../../utils/errors');
-const { ensureCategory } = require('../../utils/guildStructure');
 const RecruitmentService = require('../../services/RecruitmentService');
 const PointService = require('../../services/PointService');
 const BadgeService = require('../../services/BadgeService');
@@ -36,38 +35,54 @@ async function detectRoles(guild) {
   return { roles, missing };
 }
 
-async function detectAndCreateChannels(guild) {
+/**
+ * Détecte les salons/catégories attendus par nom exact, exactement comme
+ * `detectRoles` pour les rôles : ne crée jamais rien sur le serveur, se
+ * contente de retrouver ce qui existe déjà et de signaler ce qui manque.
+ * Un salon manquant doit être créé manuellement puis retrouvé à la prochaine
+ * relance de `/setup`.
+ */
+async function detectChannels(guild) {
   const existing = await ConfigService.getChannels();
   const channels = { ...existing };
-  const created = [];
-  const reused = [];
+  const missing = [];
+  const found = [];
 
   for (const group of CHANNEL_STRUCTURE) {
-    const category = await ensureCategory(guild, group.category);
-
     for (const { key, name } of group.channels) {
+      // Réutilise l'ID déjà connu s'il correspond toujours à un salon existant.
       if (channels[key] && guild.channels.cache.has(channels[key])) {
-        reused.push(name);
+        found.push(name);
         continue;
       }
 
-      let found = guild.channels.cache.find((c) => c.name === name && c.type === ChannelType.GuildText);
-      if (!found) {
-        found = await guild.channels.create({ name, type: ChannelType.GuildText, parent: category.id });
-        created.push(name);
+      const match = guild.channels.cache.find((c) => c.name === name && c.type === ChannelType.GuildText);
+      if (match) {
+        channels[key] = match.id;
+        found.push(name);
       } else {
-        reused.push(name);
+        channels[key] = null;
+        missing.push(name);
       }
-      channels[key] = found.id;
     }
   }
 
-  // Catégorie des fiches de paie individuelles : détectée, jamais recréée en double.
-  const payCategory = await ensureCategory(guild, PAY_CATEGORY_NAME);
-  channels.payCategory = payCategory.id;
+  // Catégorie des fiches de paie individuelles : détectée uniquement, jamais créée.
+  if (channels.payCategory && guild.channels.cache.has(channels.payCategory)) {
+    found.push(PAY_CATEGORY_NAME);
+  } else {
+    const payCategory = guild.channels.cache.find((c) => c.type === ChannelType.GuildCategory && c.name === PAY_CATEGORY_NAME);
+    if (payCategory) {
+      channels.payCategory = payCategory.id;
+      found.push(PAY_CATEGORY_NAME);
+    } else {
+      channels.payCategory = null;
+      missing.push(PAY_CATEGORY_NAME);
+    }
+  }
 
   await ConfigService.set('channels', channels);
-  return { channels, created, reused };
+  return { channels, missing, found };
 }
 
 async function initDefaultConfig() {
@@ -125,7 +140,7 @@ async function postPanels(client, guild, channels) {
 module.exports = {
   data: new SlashCommandBuilder()
     .setName('setup')
-    .setDescription("Configure automatiquement le serveur Lawrence Beignets (rôles, salons, panels). Idempotent.")
+    .setDescription('Détecte la configuration du serveur Lawrence Beignets (rôles, salons, panels). Ne crée jamais de salon/rôle.')
     .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
   async execute(interaction) {
@@ -148,7 +163,7 @@ module.exports = {
 
     const guild = interaction.guild;
     const { missing: missingRoles } = await detectRoles(guild);
-    const { channels, created, reused } = await detectAndCreateChannels(guild);
+    const { channels, missing: missingChannels, found: foundChannels } = await detectChannels(guild);
     await initDefaultConfig();
     const rulesSeeded = await seedDefaultPointRules();
     await BadgeService.seedCatalog();
@@ -158,15 +173,18 @@ module.exports = {
       action: 'SETUP',
       actorId: interaction.user.id,
       details: {
-        'Salons créés': created.length ? created.join(', ') : 'aucun',
-        'Salons réutilisés': reused.length,
+        'Salons détectés': foundChannels.length,
+        'Salons manquants': missingChannels.length ? missingChannels.join(', ') : 'aucun',
         'Rôles manquants': missingRoles.length ? missingRoles.join(', ') : 'aucun',
       },
     });
 
-    const embed = successEmbed('✅ Setup terminé', 'La configuration a été appliquée avec succès.').addFields(
-      { name: '📁 Salons créés', value: created.length ? created.map((c) => `• ${c}`).join('\n') : 'Aucun (déjà présents)' },
-      { name: '♻️ Salons réutilisés', value: String(reused.length), inline: true },
+    const embed = successEmbed('✅ Setup terminé', 'La configuration a été détectée et appliquée avec succès.').addFields(
+      { name: '📁 Salons détectés', value: String(foundChannels.length), inline: true },
+      {
+        name: '🚧 Salons manquants',
+        value: missingChannels.length ? missingChannels.map((c) => `• ${c}`).join('\n') : 'Aucun — tous détectés ✅',
+      },
       {
         name: '🎭 Rôles manquants',
         value: missingRoles.length ? missingRoles.map((r) => `• ${r}`).join('\n') : 'Aucun — tous détectés ✅',
@@ -177,9 +195,9 @@ module.exports = {
       }
     );
 
-    if (missingRoles.length) {
+    if (missingRoles.length || missingChannels.length) {
       embed.setDescription(
-        "⚠️ Certains rôles n'ont pas été trouvés sur le serveur (nom exact requis). Crée-les puis relance `/setup`."
+        "⚠️ Certains rôles ou salons n'ont pas été trouvés sur le serveur (nom exact requis) — `/setup` ne les crée plus automatiquement. Crée-les toi-même puis relance `/setup`."
       );
     }
 

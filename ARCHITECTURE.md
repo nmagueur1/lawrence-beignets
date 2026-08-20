@@ -17,14 +17,14 @@ Document de conception avant implémentation. Couvre l'architecture, le schéma 
 src/
 ├── commands/
 │   ├── admin/          setup, admin, maintenance, backup, status, points-regle, point
-│   ├── employee/       profil, promotion, retrogradation, sanction, sanctions, absence, note
+│   ├── employee/       profil, badges, promotion, retrogradation, sanction, sanctions, absence, note
 │   ├── finance/        valider-vente, salaire, payer
 │   ├── recruitment/    recrutement (ouvrir/fermer/statut), reglement
 │   ├── tickets/        (gestion via boutons, pas de slash dédiée)
 │   ├── points/         points, classement
 │   └── utility/        dashboard, annonce, organigramme
 │
-├── events/              ready, interactionCreate, guildMemberRemove, error
+├── events/              ready, interactionCreate, guildMemberAdd (rôle Visiteur auto + message d'accueil aléatoire, auto-supprimé après 2min)
 │
 ├── interactions/
 │   ├── buttons/         accueil.*, recrutement.candidater, ticket.*, vente.confirm, paiement.confirm
@@ -42,6 +42,7 @@ src/
 │   ├── AbsenceService.js
 │   ├── AnnouncementService.js
 │   ├── BadgeService.js
+│   ├── WelcomeService.js  (messages d'accueil aléatoires dans #accueil, auto-suppression)
 │   ├── LogService.js
 │   └── ConfigService.js   (cache + lecture/écriture config Firestore)
 │
@@ -132,7 +133,7 @@ PATRON et CO-PATRON partagent systématiquement `isDirection()` — aucune branc
 2. **Barème de points** : palier déclenché **par vente individuelle**, pas cumulatif. *(confirmé)*
 3. **`/payer` accessible aux managers** : dépend d'un toggle de config (`managerCanPay`), désactivé par défaut, modifiable via `/admin`.
 4. **Tarif appliqué à une vente** : figé au moment de la validation (`sale.rate`), un changement de grade ultérieur ne modifie jamais les ventes passées.
-5. **`/setup` idempotent** : chaque salon/rôle créé est immédiatement écrit dans `config/channels` ou `config/roles` ; toute relance vérifie d'abord l'existence en config **et** sur le serveur avant de créer.
+5. **`/setup` idempotent, jamais créateur** : ne crée **jamais** de salon ni de rôle sur le serveur (comme pour les rôles depuis le début). Il détecte uniquement — par ID connu en config puis par nom exact sur le serveur — et écrit ce qu'il trouve dans `config/channels` / `config/roles`. Un salon/rôle manquant est listé dans la réponse ; à créer manuellement puis relancer `/setup` pour qu'il soit retrouvé. Seuls le catalogue de badges (`BadgeService.seedCatalog`, additif) et le barème de points par défaut (si totalement vide) sont écrits automatiquement en base.
 
 ## 7. Ordre de développement (par lots)
 
