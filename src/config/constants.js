@@ -111,16 +111,103 @@ const BADGE_CRITERIA = {
   SALES_COUNT: 'SALES_COUNT',
   POINTS_TOTAL: 'POINTS_TOTAL',
   BEIGNETS_TOTAL: 'BEIGNETS_TOTAL',
+  EARNED_TOTAL: 'EARNED_TOTAL',
+  SENIORITY_DAYS: 'SENIORITY_DAYS',
+  SALES_STREAK: 'SALES_STREAK',
+  GRADE_REACHED: 'GRADE_REACHED',
+  CLEAN_SALES: 'CLEAN_SALES',
+  // Jamais évalué automatiquement (aucun cas dans BadgeService.meetsCriteria) :
+  // attribué à la main, ex. `employe-du-mois` via le job jobs/employeeOfMonth.js.
+  MANUAL: 'MANUAL',
 };
 
-// Catalogue de badges par défaut, semé une seule fois si la collection est vide.
-// Reste éditable directement dans Firestore (collection `badges`).
+const BADGE_RARITY = {
+  COMMON: 'COMMON',
+  RARE: 'RARE',
+  EPIC: 'EPIC',
+  LEGENDARY: 'LEGENDARY',
+};
+
+const BADGE_RARITY_LABELS = {
+  COMMON: '⚪ Commun',
+  RARE: '🔵 Rare',
+  EPIC: '🟣 Épique',
+  LEGENDARY: '🟡 Légendaire',
+};
+
+// Ordre croissant de rareté, utilisé pour trier l'affichage du catalogue.
+const BADGE_RARITY_ORDER = [BADGE_RARITY.COMMON, BADGE_RARITY.RARE, BADGE_RARITY.EPIC, BADGE_RARITY.LEGENDARY];
+
+const BADGE_CATEGORY_LABELS = {
+  VENTES: '🍩 Ventes',
+  BEIGNETS: '📦 Beignets livrés',
+  POINTS: '🏆 Points',
+  ARGENT: '💰 Argent généré',
+  ANCIENNETE: '📅 Ancienneté',
+  STREAK: '🔥 Régularité',
+  GRADE: '🎭 Carrière',
+  INTEGRITE: '🛡️ Sans-faute',
+  SPECIAL: '✨ Spécial',
+};
+
+// Ordre d'affichage des catégories dans /badges.
+const BADGE_CATEGORY_ORDER = ['VENTES', 'BEIGNETS', 'POINTS', 'ARGENT', 'ANCIENNETE', 'STREAK', 'GRADE', 'INTEGRITE', 'SPECIAL'];
+
+// Catalogue de badges par défaut. Semé au premier /setup, puis synchronisé
+// (uniquement les badges manquants sont ajoutés) à chaque relance de /setup —
+// ajouter une entrée ici suffit, elle apparaîtra en base au prochain /setup
+// sans jamais toucher aux badges déjà personnalisés dans Firestore.
 const DEFAULT_BADGES = [
-  { badgeId: 'first-sale', name: 'Première vente', emoji: '🍩', description: 'A validé sa toute première vente', criteria: { type: 'FIRST_SALE' } },
-  { badgeId: 'points-100', name: '100 points', emoji: '🏆', description: 'A atteint 100 points', criteria: { type: 'POINTS_TOTAL', value: 100 } },
-  { badgeId: 'points-500', name: '500 points', emoji: '🔥', description: 'A atteint 500 points', criteria: { type: 'POINTS_TOTAL', value: 500 } },
-  { badgeId: 'sales-50', name: '50 ventes', emoji: '🚚', description: 'A validé 50 ventes', criteria: { type: 'SALES_COUNT', value: 50 } },
-  { badgeId: 'employe-du-mois', name: 'Employé du mois', emoji: '👑', description: 'Élu employé du mois', criteria: { type: 'MANUAL' } },
+  // 🍩 Ventes
+  { badgeId: 'first-sale', name: 'Première vente', emoji: '🍩', description: 'A validé sa toute première vente', category: 'VENTES', rarity: 'COMMON', criteria: { type: 'FIRST_SALE' } },
+  { badgeId: 'sales-10', name: 'Apprenti vendeur', emoji: '🥉', description: 'A validé 10 ventes', category: 'VENTES', rarity: 'COMMON', criteria: { type: 'SALES_COUNT', value: 10 } },
+  { badgeId: 'sales-50', name: '50 ventes', emoji: '🚚', description: 'A validé 50 ventes', category: 'VENTES', rarity: 'RARE', criteria: { type: 'SALES_COUNT', value: 50 } },
+  { badgeId: 'sales-100', name: 'Centurion du beignet', emoji: '📦', description: 'A validé 100 ventes', category: 'VENTES', rarity: 'RARE', criteria: { type: 'SALES_COUNT', value: 100 } },
+  { badgeId: 'sales-250', name: 'Machine à beignets', emoji: '🏭', description: 'A validé 250 ventes', category: 'VENTES', rarity: 'EPIC', criteria: { type: 'SALES_COUNT', value: 250 } },
+  { badgeId: 'sales-500', name: 'Légende du comptoir', emoji: '🌟', description: 'A validé 500 ventes', category: 'VENTES', rarity: 'LEGENDARY', criteria: { type: 'SALES_COUNT', value: 500 } },
+  { badgeId: 'sales-1000', name: 'Mythe vivant', emoji: '💫', description: 'A validé 1000 ventes', category: 'VENTES', rarity: 'LEGENDARY', criteria: { type: 'SALES_COUNT', value: 1000 } },
+
+  // 📦 Beignets livrés (volume total)
+  { badgeId: 'beignets-1000', name: '1 000 beignets', emoji: '🍩', description: 'A livré 1 000 beignets au total', category: 'BEIGNETS', rarity: 'COMMON', criteria: { type: 'BEIGNETS_TOTAL', value: 1000 } },
+  { badgeId: 'beignets-5000', name: '5 000 beignets', emoji: '🍩', description: 'A livré 5 000 beignets au total', category: 'BEIGNETS', rarity: 'RARE', criteria: { type: 'BEIGNETS_TOTAL', value: 5000 } },
+  { badgeId: 'beignets-10000', name: '10 000 beignets', emoji: '🍩', description: 'A livré 10 000 beignets au total', category: 'BEIGNETS', rarity: 'EPIC', criteria: { type: 'BEIGNETS_TOTAL', value: 10000 } },
+  { badgeId: 'beignets-25000', name: 'Roi du glaçage', emoji: '👑', description: 'A livré 25 000 beignets au total', category: 'BEIGNETS', rarity: 'LEGENDARY', criteria: { type: 'BEIGNETS_TOTAL', value: 25000 } },
+
+  // 🏆 Points
+  { badgeId: 'points-100', name: '100 points', emoji: '🏆', description: 'A atteint 100 points', category: 'POINTS', rarity: 'COMMON', criteria: { type: 'POINTS_TOTAL', value: 100 } },
+  { badgeId: 'points-500', name: '500 points', emoji: '🔥', description: 'A atteint 500 points', category: 'POINTS', rarity: 'RARE', criteria: { type: 'POINTS_TOTAL', value: 500 } },
+  { badgeId: 'points-1000', name: '1 000 points', emoji: '💎', description: 'A atteint 1 000 points', category: 'POINTS', rarity: 'EPIC', criteria: { type: 'POINTS_TOTAL', value: 1000 } },
+  { badgeId: 'points-2500', name: '2 500 points', emoji: '🌠', description: 'A atteint 2 500 points', category: 'POINTS', rarity: 'LEGENDARY', criteria: { type: 'POINTS_TOTAL', value: 2500 } },
+
+  // 💰 Argent généré
+  { badgeId: 'earned-1000', name: '1 000$ générés', emoji: '💵', description: 'A généré 1 000$ de chiffre d\'affaires', category: 'ARGENT', rarity: 'COMMON', criteria: { type: 'EARNED_TOTAL', value: 1000 } },
+  { badgeId: 'earned-5000', name: '5 000$ générés', emoji: '💰', description: 'A généré 5 000$ de chiffre d\'affaires', category: 'ARGENT', rarity: 'RARE', criteria: { type: 'EARNED_TOTAL', value: 5000 } },
+  { badgeId: 'earned-25000', name: '25 000$ générés', emoji: '🏦', description: 'A généré 25 000$ de chiffre d\'affaires', category: 'ARGENT', rarity: 'EPIC', criteria: { type: 'EARNED_TOTAL', value: 25000 } },
+  { badgeId: 'earned-100000', name: '100 000$ générés', emoji: '🤑', description: 'A généré 100 000$ de chiffre d\'affaires', category: 'ARGENT', rarity: 'LEGENDARY', criteria: { type: 'EARNED_TOTAL', value: 100000 } },
+
+  // 📅 Ancienneté (depuis employee.joinedAt)
+  { badgeId: 'seniority-7', name: 'Nouvelle recrue', emoji: '🌱', description: '7 jours chez Lawrence Beignets', category: 'ANCIENNETE', rarity: 'COMMON', criteria: { type: 'SENIORITY_DAYS', value: 7 } },
+  { badgeId: 'seniority-30', name: '1 mois au poste', emoji: '📅', description: '30 jours chez Lawrence Beignets', category: 'ANCIENNETE', rarity: 'COMMON', criteria: { type: 'SENIORITY_DAYS', value: 30 } },
+  { badgeId: 'seniority-90', name: '3 mois de service', emoji: '🗓️', description: '90 jours chez Lawrence Beignets', category: 'ANCIENNETE', rarity: 'RARE', criteria: { type: 'SENIORITY_DAYS', value: 90 } },
+  { badgeId: 'seniority-180', name: '6 mois de service', emoji: '📆', description: '180 jours chez Lawrence Beignets', category: 'ANCIENNETE', rarity: 'EPIC', criteria: { type: 'SENIORITY_DAYS', value: 180 } },
+  { badgeId: 'seniority-365', name: 'Vétéran (1 an)', emoji: '🎖️', description: '365 jours chez Lawrence Beignets', category: 'ANCIENNETE', rarity: 'LEGENDARY', criteria: { type: 'SENIORITY_DAYS', value: 365 } },
+
+  // 🔥 Régularité (jours consécutifs avec au moins une vente validée)
+  { badgeId: 'streak-3', name: 'Trois jours d\'affilée', emoji: '⚡', description: '3 jours consécutifs avec une vente validée', category: 'STREAK', rarity: 'COMMON', criteria: { type: 'SALES_STREAK', value: 3 } },
+  { badgeId: 'streak-7', name: 'Semaine parfaite', emoji: '🔥', description: '7 jours consécutifs avec une vente validée', category: 'STREAK', rarity: 'RARE', criteria: { type: 'SALES_STREAK', value: 7 } },
+  { badgeId: 'streak-30', name: 'Mois de feu', emoji: '🌋', description: '30 jours consécutifs avec une vente validée', category: 'STREAK', rarity: 'LEGENDARY', criteria: { type: 'SALES_STREAK', value: 30 } },
+
+  // 🎭 Carrière (grade atteint)
+  { badgeId: 'grade-pro', name: 'Passage PRO', emoji: '👥', description: 'A atteint le grade PRO', category: 'GRADE', rarity: 'RARE', criteria: { type: 'GRADE_REACHED', value: 'PRO' } },
+  { badgeId: 'grade-manager', name: 'Passage MANAGER', emoji: '🧠', description: 'A atteint le grade MANAGER', category: 'GRADE', rarity: 'EPIC', criteria: { type: 'GRADE_REACHED', value: 'MANAGER' } },
+  { badgeId: 'grade-direction', name: 'Entrée en Direction', emoji: '👑', description: 'A atteint la Direction (PATRON / CO-PATRON)', category: 'GRADE', rarity: 'LEGENDARY', criteria: { type: 'GRADE_REACHED', value: 'DIRECTION' } },
+
+  // 🛡️ Sans-faute (ventes validées sans aucune sanction au dossier)
+  { badgeId: 'clean-25', name: '25 ventes sans accroc', emoji: '🕊️', description: '25 ventes validées, aucune sanction au dossier', category: 'INTEGRITE', rarity: 'RARE', criteria: { type: 'CLEAN_SALES', value: 25 } },
+  { badgeId: 'clean-100', name: '100 ventes sans accroc', emoji: '🛡️', description: '100 ventes validées, aucune sanction au dossier', category: 'INTEGRITE', rarity: 'EPIC', criteria: { type: 'CLEAN_SALES', value: 100 } },
+
+  // ✨ Spécial (attribution manuelle)
+  { badgeId: 'employe-du-mois', name: 'Employé du mois', emoji: '👑', description: 'Élu employé du mois', category: 'SPECIAL', rarity: 'LEGENDARY', criteria: { type: 'MANUAL' } },
 ];
 
 // Blueprint des rôles fonctionnels : détectés par nom exact, jamais créés automatiquement.
@@ -214,6 +301,11 @@ module.exports = {
   NOTE_TYPE,
   NOTE_LABELS,
   BADGE_CRITERIA,
+  BADGE_RARITY,
+  BADGE_RARITY_LABELS,
+  BADGE_RARITY_ORDER,
+  BADGE_CATEGORY_LABELS,
+  BADGE_CATEGORY_ORDER,
   DEFAULT_BADGES,
   BRAND,
 };
